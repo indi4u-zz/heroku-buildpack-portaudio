@@ -1,0 +1,27 @@
+#!/bin/sh
+echo "-----> Installing Port Audio"
+#---------------------------------
+# change to the the BUILD_DIR ($1)
+cd $1
+# download the binary (-O) silently (-s)
+curl -O -s https://raw.githubusercontent.com/galarius/portaudio-binary/master/portaudio.tar.gz
+# untar the binary to the directory vendor/portaudio
+mkdir -p vendor/portaudio
+tar -C vendor/portaudio -xvf portaudio.tar.gz
+rm portaudio.tar.gz
+mkdir -p $1/usr/local/share/alsa/
+cp $1/vendor/portaudio/share/alsa/alsa.conf $1/usr/local/share/alsa/alsa.conf
+mkdir -p $1/.cache/
+#---------------------------------
+# Setting environment variables in .profile.d script (sourced at dyno startup)
+mkdir -p $1/.profile.d
+cat <<EOF >$1/.profile.d/heroku-buildpack-portaudio-defaults.sh
+PATH=/app/vendor/portaudio/bin:\$PATH
+export LD_RUN_PATH=/app/vendor/portaudio/lib:$LD_RUN_PATH
+export LD_LIBRARY_PATH=/app/vendor/portaudio/lib:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/app/vendor/portaudio/lib:$LIBRARY_PATH
+export PORTAUDIO_PATH=/app/vendor/portaudio
+EOF
+#---------------------------------
+echo "Done <-----"
+exit 0
