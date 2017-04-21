@@ -3,6 +3,8 @@ echo "-----> Installing Port Audio"
 #---------------------------------
 # change to the the BUILD_DIR ($1)
 cd $1
+
+echo {"$1"}
 # download the binary (-O) silently (-s)
 curl -O -s https://raw.githubusercontent.com/galarius/portaudio-binary/master/portaudio.tar.gz
 # untar the binary to the directory vendor/portaudio
